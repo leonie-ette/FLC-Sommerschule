@@ -23,7 +23,7 @@ formulae_collections_md_file = '/workspaces/FLC-Sommerschule/capitains_example/d
 form_coll_md = etree.parse(formulae_collections_md_file)
 mss_edition_dict = defaultdict(set)
 title_id_dict = dict()
-if os.path.isfile(formulae_collections_md_file);
+if os.path.isfile(formulae_collections_md_file):
     for f_c in form_coll_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
         form_corp_md_path = os.path.normpath(os.path.join(os.path.dirname(formulae_collections_md_file), f_c.get('path')))
         form_corp_md = etree.parse(form_corp_md_path)
@@ -167,7 +167,7 @@ for transcription in sorted(transcriptions):
     if new_urn:
         mss_urn = new_urn
         filename_parts[1] = filename_parts[1] + str(fol_add)
-    if os.path.isfile(formulae_collections_md_file);
+    if os.path.isfile(formulae_collections_md_file):
         mss_edition_dict[mss_urn].add('urn:cts:formulae:{}.{}'.format(corpus_name, form_num))
         for s_md in md_xml.xpath('//cpt:structured-metadata', namespaces=ns):
             for mss_edition in mss_edition_dict[mss_urn]:
