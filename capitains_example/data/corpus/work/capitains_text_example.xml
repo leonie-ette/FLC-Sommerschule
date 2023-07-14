@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="format.css" ?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>TITLE HERE</title>
+                <author>AUTHOR HERE</author>
+            </titleStmt>
+            <publicationStmt>
+                <p> </p>
+            </publicationStmt>
+            <sourceDesc><p></p></sourceDesc>
+        </fileDesc>
+        <encodingDesc>
+            <refsDecl n="CTS">
+                <cRefPattern n="formula" matchPattern="(.+)" replacementPattern="#xpath(/tei:TEI/tei:text/tei:body/tei:div/tei:div[@n='$1'])">
+                    <p xml:lang="eng">This pattern extracts the whole document</p>
+                </cRefPattern>
+            </refsDecl>
+        </encodingDesc>
+    </teiHeader>
+    <text xml:space="preserve">
+        <body>
+            <div type="edition" xml:lang="lat" n="urn:cts:formulae:andecavensis.form001.lat001">
+                <div type="text" subtype="formula" n="1">
+                </div>
+            </div>
+        </body>
+    </text>
+</TEI>
