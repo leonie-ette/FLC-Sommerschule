@@ -23,22 +23,23 @@ formulae_collections_md_file = '/workspaces/FLC-Sommerschule/capitains_example/d
 form_coll_md = etree.parse(formulae_collections_md_file)
 mss_edition_dict = defaultdict(set)
 title_id_dict = dict()
-for f_c in form_coll_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
-    form_corp_md_path = os.path.normpath(os.path.join(os.path.dirname(formulae_collections_md_file), f_c.get('path')))
-    form_corp_md = etree.parse(form_corp_md_path)
-    for f_corp in form_corp_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
-        form_md_path = os.path.normpath(os.path.join(os.path.dirname(form_corp_md_path), f_corp.get('path')))
-        form_md = etree.parse(form_md_path)
-        for c in form_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
-            for t in c.xpath('./dc:type/text()', namespaces=ns):
-                if t  == 'cts:edition':
-                    title_id_dict[c.xpath('./cpt:identifier/text()', namespaces=ns)[0]] = c.xpath('./dc:title/text()', namespaces=ns)[0].replace(' (lat)', '')
-        for c in form_md.xpath('/cpt:collection/cpt:members/cpt:collection[@identifier]', namespaces=ns):
-            mss_path = os.path.normpath(os.path.join(os.path.dirname(form_md_path), c.get('path')))
-            mss_md = etree.parse(mss_path)
-            for mss in mss_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
-                if mss.xpath('dc:type', namespaces=ns)[0].text == 'transcription':
-                    mss_edition_dict[mss.xpath('cpt:identifier', namespaces=ns)[0].text].add(form_md.xpath('/cpt:collection/cpt:identifier', namespaces=ns)[0].text)
+if os.path.isfile(formulae_collections_md_file);
+    for f_c in form_coll_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
+        form_corp_md_path = os.path.normpath(os.path.join(os.path.dirname(formulae_collections_md_file), f_c.get('path')))
+        form_corp_md = etree.parse(form_corp_md_path)
+        for f_corp in form_corp_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
+            form_md_path = os.path.normpath(os.path.join(os.path.dirname(form_corp_md_path), f_corp.get('path')))
+            form_md = etree.parse(form_md_path)
+            for c in form_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
+                for t in c.xpath('./dc:type/text()', namespaces=ns):
+                    if t  == 'cts:edition':
+                        title_id_dict[c.xpath('./cpt:identifier/text()', namespaces=ns)[0]] = c.xpath('./dc:title/text()', namespaces=ns)[0].replace(' (lat)', '')
+            for c in form_md.xpath('/cpt:collection/cpt:members/cpt:collection[@identifier]', namespaces=ns):
+                mss_path = os.path.normpath(os.path.join(os.path.dirname(form_md_path), c.get('path')))
+                mss_md = etree.parse(mss_path)
+                for mss in mss_md.xpath('/cpt:collection/cpt:members/cpt:collection', namespaces=ns):
+                    if mss.xpath('dc:type', namespaces=ns)[0].text == 'transcription':
+                        mss_edition_dict[mss.xpath('cpt:identifier', namespaces=ns)[0].text].add(form_md.xpath('/cpt:collection/cpt:identifier', namespaces=ns)[0].text)
 
 def remove_space_before_note(filename):
     with open(filename) as f:
@@ -166,13 +167,14 @@ for transcription in sorted(transcriptions):
     if new_urn:
         mss_urn = new_urn
         filename_parts[1] = filename_parts[1] + str(fol_add)
-    mss_edition_dict[mss_urn].add('urn:cts:formulae:{}.{}'.format(corpus_name, form_num))
-    for s_md in md_xml.xpath('//cpt:structured-metadata', namespaces=ns):
-        for mss_edition in mss_edition_dict[mss_urn]:
-            new_element = etree.Element('{http://purl.org/dc/terms/}isVersionOf', nsmap=ns)
-            new_element.text = mss_edition
-            s_md.append(new_element)
-    md_xml.xpath('/cpt:collection/dc:title', namespaces=ns)[0].text = md_xml.xpath('/cpt:collection/dc:title', namespaces=ns)[0].text + ': ' + '/'.join([title_id_dict[form_id + '.lat001'] for form_id in mss_edition_dict[mss_urn]])
+    if os.path.isfile(formulae_collections_md_file);
+        mss_edition_dict[mss_urn].add('urn:cts:formulae:{}.{}'.format(corpus_name, form_num))
+        for s_md in md_xml.xpath('//cpt:structured-metadata', namespaces=ns):
+            for mss_edition in mss_edition_dict[mss_urn]:
+                new_element = etree.Element('{http://purl.org/dc/terms/}isVersionOf', nsmap=ns)
+                new_element.text = mss_edition
+                s_md.append(new_element)
+        md_xml.xpath('/cpt:collection/dc:title', namespaces=ns)[0].text = md_xml.xpath('/cpt:collection/dc:title', namespaces=ns)[0].text + ': ' + '/'.join([title_id_dict[form_id + '.lat001'] for form_id in mss_edition_dict[mss_urn]])
     md_xml.write('{folder}/__capitains__.xml'.format(folder=new_folder), encoding='utf-8', pretty_print=True)
     makedirs('{base_folder}/data/{corpus}/{entry}'.format(base_folder=destination_folder, corpus=corpus_name, entry=form_num), exist_ok=True)
     temp_file = '{base_folder}/data/{corpus}/{entry}/{man_filename}'.format(base_folder=destination_folder, corpus=corpus_name, entry=form_num, man_filename='.'.join(filename_parts) + '.xml')
