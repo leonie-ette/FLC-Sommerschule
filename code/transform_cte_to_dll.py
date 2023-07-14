@@ -7,11 +7,10 @@ import sys
 from lxml import etree
 from collections import defaultdict
 
-home_dir = environ.get('HOME', '')
-saxon_location = home_dir + '/code/SaxonHE9-8-0-11J/saxon9he.jar'
-text_transformation_xslt = home_dir + '/code/transform_cte_to_dll.xsl'
-metadata_transformation_xslt = home_dir + '/code/create_capitains_files.xsl'
-collection_metadata_xslt = home_dir + '/code/create_collection_capitains_files.xsl'
+saxon_location = '/workspaces/FLC-Sommerschule/code/SaxonHE9-8-0-11J/saxon9he.jar'
+text_transformation_xslt = '/workspaces/FLC-Sommerschule/code/transform_cte_to_dll.xsl'
+metadata_transformation_xslt = '/workspaces/FLC-Sommerschule/code/create_capitains_files.xsl'
+collection_metadata_xslt = '/workspaces/FLC-Sommerschule/code/create_collection_capitains_files.xsl'
 corpus_name = sys.argv[2] or 'andecavensis' # Used to build the folder structure
 destination_folder = getcwd() # The base folder where the corpus folder structure should be built
 latins = glob(destination_folder + '/Latin/*.xml')
@@ -20,7 +19,7 @@ transcriptions = glob(destination_folder + '/Transkripte/**/*.xml', recursive=Tr
 temp_files = []
 ns = {'dct': "http://purl.org/dc/terms/", 'dc': "http://purl.org/dc/elements/1.1/", 'cpt': "http://purl.org/capitains/ns/1.0#", 'tei': 'http://www.tei-c.org/ns/1.0'}
 
-formulae_collections_md_file = home_dir + '/capitains_example/data/formulae_collection/__capitains__.xml'
+formulae_collections_md_file = '/workspaces/FLC-Sommerschule/capitains_example/data/formulae_collection/__capitains__.xml'
 form_coll_md = etree.parse(formulae_collections_md_file)
 mss_edition_dict = defaultdict(set)
 title_id_dict = dict()
